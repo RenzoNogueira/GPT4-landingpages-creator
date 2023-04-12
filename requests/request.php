@@ -28,38 +28,82 @@ if (isset($_POST['request'])) {
 
                 Uma Landing page simples com fundo cinza, um título azul "Hello World" ao centro da tela e uma imagem centralizada abaixo. Utilize explicitamente as classes do Bootstrap 4 e evite o uso de CSS.
 
-                Saída:
+                Exemplo de saída:
 
                 ```
                 <!DOCTYPE html>
                 <html lang="pt-br">
-                    <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.">
-                        <title>Landing Page</title>
-                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" crossorigin="anonymous">
-                        <style>
-                            body {
-                                width: 100vw !important;
-                                height: 100vh !important;
-                                margin: 0px !important;
-                                padding: 0px !important;
-                            }
-                        </style>
-                    </head>
-                    <body class="bg-light d-flex justify-content-center align-items-center">
 
-                        <main class="d-flex flex-column justify-content-center align-items-center">
-                            <h1 class="text-primary">Hello World</h1>
-                            <h2 class="text-secondary">Sample Text</h2>
-                            <img src="https://picsum.photos/###/###" class="rounded mx-auto d-block mt-4" alt="Exemplo de imagem">
-                            <button type="button" class="btn btn-primary btn-lg btn-block mt-4">Examplo de botão</button>
-                        </main>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.">
+                    <title>Landing Page</title>
+                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+                        crossorigin="anonymous">
+                </head>
 
-                        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
-                        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3ttrags/dist/umd/popper.min.js" crossorigin="anonymous"></script>
-                        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
-                    </body>
+                <body class="bg-secondary">
+
+                    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                        <a class="navbar-brand" href="#">Logo</a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                        <div class="collapse navbar-collapse" id="navbarNav">
+                            <ul class="navbar-nav ml-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">About</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Contact</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+
+                    <main class="container-fluid mt-2">
+                        <div class="jumbotron">
+                            <h1 class="display-4 text-center">Hello World</h1>
+                            <hr class="my-4">
+                            <p class="lead text-center">This is a simple hero unit, a simple jumbotron-style component for calling extra
+                                attention to featured content or information.</p>
+                            <div class="d-flex justify-content-center">
+                                <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+                            </div>
+                        </div>
+
+                        <div class="card-deck">
+                            <div class="card">
+                                <img class="card-img-top" src="https://picsum.photos/500/300" alt="Card image cap">
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to
+                                        additional content. This content is a little bit longer.</p>
+                                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <img class="card-img-top" src="https://picsum.photos/500/300" alt="Card image cap">
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">This card has supporting text below as a natural lead-in to additional content.
+                                    </p>
+                                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+
+                    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3ttrags/dist/umd/popper.min.js"
+                        crossorigin="anonymous"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js" crossorigin="anonymous">
+                    </script>
+                </body>
+
                 </html>
                 ```
     TEXT
