@@ -148,7 +148,7 @@
                     $('#btn-download').attr('href', `../pages/${fileName}.html`);
 
                     // Botão de enviar
-                    $('#btn-enviar').text('Enviar');
+                    $('#btn-enviar').text('Recriar');
                     $('#btn-enviar').toggleClass('loading');
                     $('#btn-enviar').attr('disabled', false);
 

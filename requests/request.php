@@ -26,7 +26,7 @@ if (isset($_POST['request'])) {
 
                 Exemplo de descrição:
 
-                Simples landing page.
+                Uma Landing page simples com fundo cinza, um título azul "Hello World" ao centro da tela e uma imagem centralizada abaixo. Utilize explicitamente as classes do Bootstrap 4 e evite o uso de CSS.
 
                 Saída:
 
@@ -36,19 +36,29 @@ if (isset($_POST['request'])) {
                     <head>
                         <meta charset="UTF-8">
                         <meta name="viewport" content="width=device-width, initial-scale=1.">
-                        <title>Title</title>
-                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+                        <title>Landing Page</title>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" crossorigin="anonymous">
+                        <style>
+                            body {
+                                width: 100vw !important;
+                                height: 100vh !important;
+                                margin: 0px !important;
+                                padding: 0px !important;
+                            }
+                        </style>
                     </head>
-                    <body>
-                        <div class="container">
-                            <h1>My First Bootstrap Page</h1>
-                            <p>This is some text.</p>
-                        </div>
-                        <img src="https://picsum.photos/200/300" class="img-fluid" alt="Responsive image">
+                    <body class="bg-light d-flex justify-content-center align-items-center">
 
-                        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-                        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-                        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+                        <main class="d-flex flex-column justify-content-center align-items-center">
+                            <h1 class="text-primary">Hello World</h1>
+                            <h2 class="text-secondary">Sample Text</h2>
+                            <img src="https://picsum.photos/###/###" class="rounded mx-auto d-block mt-4" alt="Exemplo de imagem">
+                            <button type="button" class="btn btn-primary btn-lg btn-block mt-4">Examplo de botão</button>
+                        </main>
+
+                        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+                        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3ttrags/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+                        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
                     </body>
                 </html>
                 ```
