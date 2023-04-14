@@ -15,5 +15,8 @@ if (isset($_COOKIE['nTokens'])) {
     setcookie('limite', $limite, time() + (86400 * 30), '/');
 }
 
+// Adiciona um token ao usuário
+// setcookie('nTokens', 30, time() + (86400 * 30), '/');
+
 // Retorna o número de tokens do usuário em formato JSON
 echo json_encode(array('tokens' => $nTokens, 'limite' => $limite));

@@ -29,7 +29,7 @@ if (isset($_POST['request'])) {
 
                 Uma Landing page simples com fundo cinza, um título azul "Hello World" ao centro da tela e uma imagem centralizada abaixo. Utilize explicitamente as classes do Bootstrap 4 e evite o uso de CSS.
 
-                Exemplo de saída:
+                Exemplo de saída, não vou explicar nada antes de dizer o código:
 
                 ```html
                 <!DOCTYPE html>
@@ -44,59 +44,60 @@ if (isset($_POST['request'])) {
                 </head>
 
                 <body class="bg-secondary" id="app">
-
-                    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-                        <a class="navbar-brand" href="#">Logo</a>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                        <div class="collapse navbar-collapse" id="navbarNav">
-                            <ul class="navbar-nav ml-auto">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Home</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">About</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Contact</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </nav>
-
-                    <main class="container-fluid mt-2">
-                        <div class="jumbotron">
-                            <h1 class="display-4 text-center">Hello World</h1>
-                            <hr class="my-4">
-                            <p class="lead text-center">This is a simple hero unit, a simple jumbotron-style component for calling extra
-                                attention to featured content or information.</p>
-                            <div class="d-flex justify-content-center">
-                                <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+                    <div id="app">
+                        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                            <a class="navbar-brand" href="#">Logo</a>
+                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                            <div class="collapse navbar-collapse" id="navbarNav">
+                                <ul class="navbar-nav ml-auto">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#">Home</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#">About</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#">Contact</a>
+                                    </li>
+                                </ul>
                             </div>
-                        </div>
+                        </nav>
 
-                        <div class="card-deck">
-                            <div class="card">
-                                <img class="card-img-top" src="https://picsum.photos/500/300" alt="Card image cap">
-                                <div class="card-body">
-                                    <h5 class="card-title">Card title</h5>
-                                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to
-                                        additional content. This content is a little bit longer.</p>
-                                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                        <main class="container-fluid mt-2">
+                            <div class="jumbotron">
+                                <h1 class="display-4 text-center">Hello World</h1>
+                                <hr class="my-4">
+                                <p class="lead text-center">This is a simple hero unit, a simple jumbotron-style component for calling extra
+                                    attention to featured content or information.</p>
+                                <div class="d-flex justify-content-center">
+                                    <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
                                 </div>
                             </div>
-                            <div class="card">
-                                <img class="card-img-top" src="https://picsum.photos/500/300" alt="Card image cap">
-                                <div class="card-body">
-                                    <h5 class="card-title">Card title</h5>
-                                    <p class="card-text">This card has supporting text below as a natural lead-in to additional content.
-                                    </p>
-                                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+
+                            <div class="card-deck">
+                                <div class="card">
+                                    <img class="card-img-top" src="https://picsum.photos/500/300" alt="Card image cap">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Card title</h5>
+                                        <p class="card-text">This is a longer card with supporting text below as a natural lead-in to
+                                            additional content. This content is a little bit longer.</p>
+                                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <img class="card-img-top" src="https://picsum.photos/500/300" alt="Card image cap">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Card title</h5>
+                                        <p class="card-text">This card has supporting text below as a natural lead-in to additional content.
+                                        </p>
+                                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </main>
+                        </main>
+                    </div>
 
                     <script src="{{jquery}}" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
                     <script src="{{popper}}" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -113,7 +114,7 @@ if (isset($_POST['request'])) {
 
                 </html>```
 
-                Fim do exemplo.
+                No final da saída, posso explicar como funciona o código gerado. Não preciso mais citar linhas de código, pois já fiz isso no exemplo. Irei citar os elementos que adicionei na criação do arquivo. e seu fluxo de execução e funcionalidade, além se tem como melhorar.
     TEXT
             ],
             ['role' => 'user', 'content' => $text],
@@ -169,7 +170,14 @@ if (isset($_POST['request'])) {
         $content = explode('html```', $content[1]);
         $content = $content[0];
         $content = explode('```', $content);
+        $explication = $content[1];
         $content = $content[0];
+
+        // Remove os espaços em branco de início e fim
+        $explication = trim($explication);
+
+        // Remove duplas quebras de linha
+        $explication = str_replace("\n\n", "\n", $explication);
 
         // Limpa o arquivo
         $file = fopen('../pages/' . $fileName . '.html', 'w');
@@ -184,7 +192,7 @@ if (isset($_POST['request'])) {
         $nToken = getTokens()["tokens"] - 1;
         saveTokens($nToken, getTokens()["limite"]);
 
-        echo json_encode(['status' => 'success', 'fileName' => $fileName . '.html', 'tokens' => $nToken]);
+        echo json_encode(['status' => 'success', 'fileName' => $fileName . '.html', 'explication' => $explication, 'tokens' => $nToken]);
     } else {
         echo json_encode(['status' => 'error']);
     }

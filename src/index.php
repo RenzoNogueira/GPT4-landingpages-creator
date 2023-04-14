@@ -8,6 +8,8 @@
     <title>ChatGPT-4 create Landing page</title>
 
     <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/codemirror.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/theme/darcula.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         textarea {
@@ -48,6 +50,7 @@
                     <span class="label-text-alt" id="n-caracteres">0/2000</span>
                 </label>
                 <textarea id="description" class="textarea textarea-bordered h-24" placeholder="Descreva sua Uma Landing page simples com fundo verde e um título azul Hello World ao centro." id="input"></textarea>
+                <progress class="progress w-100 mt-1" style="display: none;" id="progress"></progress>
                 <label class="label">
                     <span class="label-text-alt" id="msg-info"></span>
                     <span class="label-text-alt" id="tokens-for-create"><i class="fas fa-info-circle"></i> <span id="n-tokens" class="text-yellow">30/30</span> tokens para criar sua Landing page</span>
@@ -61,14 +64,43 @@
         </div>
 
         <iframe class="rounded" id="view-page" src="my-landing-page" style="display: none;"></iframe>
+
+        <!-- Botão para atualizar o iframe -->
+        <button id="btn-refresh" class="btn btn-primary text-white mt-2" style="display: none;">Atualizar visualização</button>
+
+        <!-- Área para feedback da geração da Landing page -->
+        <textarea id="feedback" class="textarea textarea-bordered h-24 mt-2" style="display: none;" disabled></textarea>
+
+        <!-- Código gerado -->
+        <div class="my-2" id="code-generated" style="display: none;">
+            <h2 class="text-2xl font-bold">Código gerado</h2>
+            <div class="form-control mt-2">
+                <textarea id="editor" class="textarea textarea-bordered h-24"></textarea>
+            </div>
+        </div>
+
     </main>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/htmlmixed/htmlmixed.min.js"></script>
     <script src="https://kit.fontawesome.com/274af9ab8f.js" crossorigin="anonymous"></script>
     <script>
         var nTokens = 30;
         var limiteTokens = 30;
 
         $(document).ready(function() { // Atualiza o iframe
+
+            // Inicializa o editor
+            var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+                mode: {
+                    name: "htmlmixed"
+                },
+                theme: "darcula",
+                lineNumbers: true,
+                indentUnit: 2,
+                tabSize: 2,
+                lineWrapping: true
+            });
 
             $.fn.renderIframe = function(renderIframe) {
                 const iframe = $('#view-page');
@@ -108,12 +140,21 @@
                 } else if (caracteres > (limite * 0.5) && caracteres <= (limite * 0.75)) {
                     $('#n-caracteres').css('color', 'orange');
                 } else if (caracteres > (limite * 0.75) && caracteres <= limite) {
-                    $('#n-caracteres').css('color', 'red');
+                    $('.#n-caracteres').css('color', 'red');
                 }
+            }
+
+            // Carregar o código no editor
+            $.fn.loadCode = function(fileName) {
+                $.get('../pages/' + fileName + '.html', function(data) {
+                    editor.setValue(data);
+                });
             }
 
             // Atualiza o número de tokens
             $.fn.updateTokens = function(nTokens) {
+                // Verificab se é menor que 0
+                if (nTokens < 0) nTokens = 0;
                 $('#n-tokens').text(`${nTokens}/${limiteTokens}`);
                 if (nTokens <= 0) {
                     $('#n-tokens').css('color', 'red');
@@ -159,6 +200,9 @@
                 // Muda o texto do botão enviar para "Criando..."
                 $(this).text('Criando...');
 
+                // Mostra o progress
+                $('#progress').show();
+
                 $.post('../requests/request.php', { // Inicia a requisição
                     request: {
                         description: description,
@@ -183,18 +227,38 @@
                         $('#btn-download').show();
                         $('#btn-download').attr('href', `../pages/${fileName}.html`);
 
+                        // Botão de atualizar
+                        $('#btn-refresh').show();
+
                         // Botão de enviar
                         $('#btn-enviar').text('Recriar');
                         $('#btn-enviar').toggleClass('loading');
                         $('#btn-enviar').attr('disabled', false);
+
+                        // progress
+                        $('#progress').hide();
 
                         // Atualiza o iframe com o resultado
                         $(this).renderIframe(fileName);
                         // Para o intervalo de tempo
                         clearInterval(intervalId);
                         $(this).updateTokens(data.tokens); // Atualiza o número de tokens
+
+                        // Carrega a mensagem de feddback
+                        $('#feedback').show();
+                        $('#feedback').val(data.explication);
+
+                        // Carrega o código no editor
+                        $(this).loadCode(fileName);
+                        $("#code-generated").show();
                     }
                 });
+
+                // Adiciona o evento no botão de atualizar o iframe
+                $('#btn-refresh').click(function() {
+                    $.fn.renderIframe(fileName);
+                });
+
 
                 // Inicia o intervalo de tempo
                 var intervalId = setInterval(function() {
