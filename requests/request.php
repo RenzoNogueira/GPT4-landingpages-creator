@@ -8,27 +8,7 @@ $chave = file_get_contents('../key.txt');
 
 $client = OpenAI::client($chave);
 
-function saveTokens($nTokens, $limite) {
-    // Salva o cookie durante 1 Mes
-    setcookie('nTokens', $nTokens, time() + (86400 * 30), '/'); // 86400 = 1 day
-    setcookie('limite', $limite, time() + (86400 * 30), '/');
-}
-
-// Verifica se existe o número de tokens do usuário nos cookies
-if(isset($_COOKIE['nTokens'])) {
-    // Pega o número de tokens do usuário dos cookies
-    $nTokens = $_COOKIE['nTokens'];
-    $limite = $_COOKIE['limite'];
-} else {
-    // Se não existir, cria o cookie com o número de tokens padrão
-    $nTokens = 30;
-    $limite = 30;
-    saveTokens($nTokens, $limite);
-}
-
 if (isset($_POST['request'])) {
-    // $text = json_decode($_POST['input']);
-    // $fileName = json_decode($_POST['fileName']);
     $request = $_POST['request'];
     $text = $request['description'];
     $fileName = $request['fileName'];
@@ -171,8 +151,6 @@ if (isset($_POST['request'])) {
     fclose($file);
     // Verifica se o arquivo foi criado
     if (file_exists('../pages/' . $fileName . '.html')) {
-        global $nToken;
-        global $limit;
         // Se foi criado pega o conteúdo do arquivo e aproveita apenas o que está dentro da de ```html até ```
         $file = fopen('../pages/' . $fileName . '.html', 'r');
         $content = fread($file, filesize('../pages/' . $fileName . '.html'));
@@ -185,7 +163,6 @@ if (isset($_POST['request'])) {
         $content = str_replace("{{popper}}", $linkPopper, $content);
         $content = str_replace("{{bootstrap-js}}", $linkBootstrapJs, $content);
         $content = str_replace("{{vue-js-2}}", $linkVueJs2, $content);
-
 
         // Pega o conteúdo que está dentro da de ```html até ```
         $content = explode('```html', $content);
@@ -204,13 +181,39 @@ if (isset($_POST['request'])) {
         fclose($file);
 
         // Subtrai um token do usuário
-        $nToken -= 1;
-        // Salva o novo token
-        saveTokens($nToken, $limite);
+        $nToken = getTokens()["tokens"] - 1;
+        saveTokens($nToken, getTokens()["limite"]);
 
-        echo json_encode(['status' => 'success', 'fileName' => $fileName . '.html']);
+        echo json_encode(['status' => 'success', 'fileName' => $fileName . '.html', 'tokens' => $nToken]);
     } else {
         echo json_encode(['status' => 'error']);
     }
     exit;
+}
+
+function saveTokens($nTokens, $limite)
+{
+    // Salva o cookie durante 1 Mes
+    setcookie('nTokens', $nTokens, time() + (86400 * 30), '/'); // 86400 = 1 day
+    setcookie('limite', $limite, time() + (86400 * 30), '/');
+}
+
+function getTokens()
+{
+    // Verifica se existe o número de tokens do usuário nos cookies
+    if (isset($_COOKIE['nTokens'])) {
+        if (is_numeric($_COOKIE['nTokens']) && is_numeric($_COOKIE['limite'])) {
+            $nTokens = intval($_COOKIE['nTokens']);
+            $limite = intval($_COOKIE['limite']);
+        } else {
+            $nTokens = 30;
+            $limite = 30;
+            saveTokens($nTokens, $limite);
+        }
+    } else {
+        $nTokens = 30;
+        $limite = 30;
+        saveTokens($nTokens, $limite);
+    }
+    return array('tokens' => $nTokens, 'limite' => $limite);
 }

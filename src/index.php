@@ -83,7 +83,7 @@
                 } catch (error) {}
             }
 
-            // Funcao observadora do textarea
+            // Função observadora do textarea
             $.fn.observerDescription = function(element) {
                 const caracteres = element.val().length;
                 $('#n-caracteres').text(`${caracteres}/${limite}`);
@@ -124,7 +124,7 @@
                 }
             }
 
-            // Busdca a quantidade de tokens do usuário
+            // Busca a quantidade de tokens do usuário
             $.fn.getTokens = function() {
                 $.get('../requests/tokens.php', function(data) {
                     data = JSON.parse(data);
@@ -165,25 +165,35 @@
                         fileName: fileName
                     }
                 }, function(data) {
-                    // Atualiza a mensagem de carregamento
-                    $('#msg-info').text('Sua Landing page foi criada com sucesso!');
-                    // Define a cor da mensagem de carregamento
-                    $('#msg-info').toggleClass('text-yellow-500 text-lime-500');
+                    data = JSON.parse(data);
+                    if (data.status == 'error') {
+                        $('#msg-info').text(data.message);
+                        $('#msg-info').toggleClass('text-yellow-500 text-red-500');
+                        $('#btn-enviar').text('Enviar');
+                        $('#btn-enviar').toggleClass('loading');
+                        $('#btn-enviar').attr('disabled', false);
+                        return;
+                    } else {
+                        // Atualiza a mensagem de carregamento
+                        $('#msg-info').text('Sua Landing page foi criada com sucesso!');
+                        // Define a cor da mensagem de carregamento
+                        $('#msg-info').toggleClass('text-yellow-500 text-lime-500');
 
-                    // Botão de download
-                    $('#btn-download').show();
-                    $('#btn-download').attr('href', `../pages/${fileName}.html`);
+                        // Botão de download
+                        $('#btn-download').show();
+                        $('#btn-download').attr('href', `../pages/${fileName}.html`);
 
-                    // Botão de enviar
-                    $('#btn-enviar').text('Recriar');
-                    $('#btn-enviar').toggleClass('loading');
-                    $('#btn-enviar').attr('disabled', false);
+                        // Botão de enviar
+                        $('#btn-enviar').text('Recriar');
+                        $('#btn-enviar').toggleClass('loading');
+                        $('#btn-enviar').attr('disabled', false);
 
-                    // Atualiza o iframe com o resultado
-                    $(this).renderIframe(fileName);
-                    // Para o intervalo de tempo
-                    clearInterval(intervalId);
-                    $(this).getTokens(); // Atualiza o número de tokens
+                        // Atualiza o iframe com o resultado
+                        $(this).renderIframe(fileName);
+                        // Para o intervalo de tempo
+                        clearInterval(intervalId);
+                        $(this).updateTokens(data.tokens); // Atualiza o número de tokens
+                    }
                 });
 
                 // Inicia o intervalo de tempo

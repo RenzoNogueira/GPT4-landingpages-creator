@@ -15,11 +15,5 @@ if (isset($_COOKIE['nTokens'])) {
     setcookie('limite', $limite, time() + (86400 * 30), '/');
 }
 
-$adicional = 0;
-if($adicional > 0) {
-    $nTokens += $adicional;
-    setcookie('limite', $limite, time() + (86400 * 30), '/');
-}
-
 // Retorna o número de tokens do usuário em formato JSON
 echo json_encode(array('tokens' => $nTokens, 'limite' => $limite));
