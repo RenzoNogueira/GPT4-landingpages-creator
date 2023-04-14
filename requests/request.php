@@ -8,6 +8,24 @@ $chave = file_get_contents('../key.txt');
 
 $client = OpenAI::client($chave);
 
+function saveTokens($nTokens, $limite) {
+    // Salva o cookie durante 1 Mes
+    setcookie('nTokens', $nTokens, time() + (86400 * 30), '/'); // 86400 = 1 day
+    setcookie('limite', $limite, time() + (86400 * 30), '/');
+}
+
+// Verifica se existe o número de tokens do usuário nos cookies
+if(isset($_COOKIE['nTokens'])) {
+    // Pega o número de tokens do usuário dos cookies
+    $nTokens = $_COOKIE['nTokens'];
+    $limite = $_COOKIE['limite'];
+} else {
+    // Se não existir, cria o cookie com o número de tokens padrão
+    $nTokens = 30;
+    $limite = 30;
+    saveTokens($nTokens, $limite);
+}
+
 if (isset($_POST['request'])) {
     // $text = json_decode($_POST['input']);
     // $fileName = json_decode($_POST['fileName']);
@@ -15,14 +33,17 @@ if (isset($_POST['request'])) {
     $text = $request['description'];
     $fileName = $request['fileName'];
     $stream = $client->chat()->createStreamed([
-        'model' => 'gpt-4',
+        'model' => 'gpt-3.5-turbo',
         'messages' => [
             [
                 'role' => 'system', 'content' => <<<TEXT
-                Posso gerar código HTML, jQuery e Bootstrap 4 para criar uma landing page com base nas informações que você me fornecer.
+                Posso gerar código HTML, jQuery e Bootstrap 4 e Vue js 2 para criar uma landing page com base nas informações que você me fornecer.
                 Receberei uma descrição da sua landing page, incluindo informações sobre o navbar, seções de conteúdo e qualquer funcionalidade interativa que você gostaria de adicionar.
                 Com base nessas informações, eu vou gerar o código para a sua página.
-                Meu objetivo é gerar um código preciso e funcional para sua landing page. esse código será salvo em um arquivo HTML e você poderá baixá-lo. O meu retorno para a sua descrição será um código HTML, jQuery e Bootstrap 4.
+
+                Meu objetivo é gerar um código preciso e funcional para sua landing page. esse código será salvo em um arquivo HTML e você poderá baixá-lo. O meu retorno para a sua descrição será um código HTML, jQuery, Vue js 2, Bootstrap 4 e ícones do Bootstrap. As interações do site serão totalmente em jQuery e Vue js 2. Cores no CSS sempre irei pôr em formato HEX.
+
+                Toda página que eu criar será uma singler page aplicatrion, embora possa ter outras páginas além da princopal. Irei sempre começar a escrever a minha resposta com "```html" e finalizar com "```". Eu não preciso explicar ou comentar nada sobre o código senão dará erro eo executar o HTML. Então não terá texto antes de "```html" e depois de "```". O que estiver entre "{{" e "}}" será substituído via script.
 
                 Exemplo de descrição:
 
@@ -30,7 +51,7 @@ if (isset($_POST['request'])) {
 
                 Exemplo de saída:
 
-                ```
+                ```html
                 <!DOCTYPE html>
                 <html lang="pt-br">
 
@@ -38,11 +59,11 @@ if (isset($_POST['request'])) {
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.">
                     <title>Landing Page</title>
-                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-                        crossorigin="anonymous">
+                    <link rel="stylesheet" href="{{bootstrap-css}}" crossorigin="anonymous" referrerpolicy="no-referrer" />
+                    <link rel="stylesheet" href="{{bootstrap-icons}}" crossorigin="anonymous" referrerpolicy="no-referrer" />
                 </head>
 
-                <body class="bg-secondary">
+                <body class="bg-secondary" id="app">
 
                     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
                         <a class="navbar-brand" href="#">Logo</a>
@@ -97,20 +118,35 @@ if (isset($_POST['request'])) {
                         </div>
                     </main>
 
-                    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
-                    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3ttrags/dist/umd/popper.min.js"
-                        crossorigin="anonymous"></script>
-                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js" crossorigin="anonymous">
+                    <script src="{{jquery}}" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                    <script src="{{popper}}" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                    <script src="{{vue-js-2}}" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                    <script src="{{bootstrap-js}}" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                    <script>
+                        // Exemplo de inicialização do Vue js 2, será modificado para cada caso.
+                        var app = new Vue({
+                            el: '#app',
+                            data: {}
+                        })
                     </script>
                 </body>
 
-                </html>
-                ```
+                </html>```
+
+                Fim do exemplo.
     TEXT
             ],
             ['role' => 'user', 'content' => $text],
         ],
     ]);
+
+    $linkBootstrap = 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css';
+    $linkBootstrapIcons = 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.4/font/bootstrap-icons.min.css';
+
+    $linkJquery = 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js';
+    $linkPopper = 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js';
+    $linkBootstrapJs = 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.min.js';
+    $linkVueJs2 = 'https://cdn.jsdelivr.net/npm/vue@2';
 
     // Cerifica se a pasta ../pages/ existe, caso não exista, cria a pasta
     if (!file_exists('../pages/')) {
@@ -135,10 +171,46 @@ if (isset($_POST['request'])) {
     fclose($file);
     // Verifica se o arquivo foi criado
     if (file_exists('../pages/' . $fileName . '.html')) {
+        global $nToken;
+        global $limit;
+        // Se foi criado pega o conteúdo do arquivo e aproveita apenas o que está dentro da de ```html até ```
+        $file = fopen('../pages/' . $fileName . '.html', 'r');
+        $content = fread($file, filesize('../pages/' . $fileName . '.html'));
+        fclose($file);
+
+        // Substitui as variáveis de CDN pelo valor verdadeiro
+        $content = str_replace("{{bootstrap-css}}", $linkBootstrap, $content);
+        $content = str_replace("{{bootstrap-icons}}", $linkBootstrapIcons, $content);
+        $content = str_replace("{{jquery}}", $linkJquery, $content);
+        $content = str_replace("{{popper}}", $linkPopper, $content);
+        $content = str_replace("{{bootstrap-js}}", $linkBootstrapJs, $content);
+        $content = str_replace("{{vue-js-2}}", $linkVueJs2, $content);
+
+
+        // Pega o conteúdo que está dentro da de ```html até ```
+        $content = explode('```html', $content);
+        $content = explode('html```', $content[1]);
+        $content = $content[0];
+        $content = explode('```', $content);
+        $content = $content[0];
+
+        // Limpa o arquivo
+        $file = fopen('../pages/' . $fileName . '.html', 'w');
+        fwrite($file, '');
+        fclose($file);
+        // Escreve o conteúdo dentro do arquivo
+        $file = fopen('../pages/' . $fileName . '.html', 'a');
+        fwrite($file, $content);
+        fclose($file);
+
+        // Subtrai um token do usuário
+        $nToken -= 1;
+        // Salva o novo token
+        saveTokens($nToken, $limite);
+
         echo json_encode(['status' => 'success', 'fileName' => $fileName . '.html']);
     } else {
         echo json_encode(['status' => 'error']);
     }
     exit;
 }
-?>

@@ -36,8 +36,6 @@
         #view-page {
             background-color: #000 !important;
         }
-
-
     </style>
 </head>
 
@@ -52,20 +50,25 @@
                 <textarea id="description" class="textarea textarea-bordered h-24" placeholder="Descreva sua Uma Landing page simples com fundo verde e um título azul Hello World ao centro." id="input"></textarea>
                 <label class="label">
                     <span class="label-text-alt" id="msg-info"></span>
+                    <span class="label-text-alt" id="tokens-for-create"><i class="fas fa-info-circle"></i> <span id="n-tokens" class="text-yellow">30/30</span> tokens para criar sua Landing page</span>
                 </label>
             </div>
             <div class="my-2">
-            <button id="btn-enviar" class="btn btn-primary text-white">Enviar</button>
-            <!-- Botao de download -->
-            <a id="btn-download" class="btn btn-success text-white" download="#" style="display: none;">Download</a>
+                <button id="btn-enviar" class="btn btn-primary text-white">Enviar</button>
+                <!-- Botao de download -->
+                <a id="btn-download" class="btn btn-success text-white ml-2" download="#" style="display: none;">Download</a>
             </div>
         </div>
 
         <iframe class="rounded" id="view-page" src="my-landing-page" style="display: none;"></iframe>
     </main>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://kit.fontawesome.com/274af9ab8f.js" crossorigin="anonymous"></script>
     <script>
-        $(document).ready(function() {
+        var nTokens = 30;
+        var limiteTokens = 30;
+
+        $(document).ready(function() { // Atualiza o iframe
 
             $.fn.renderIframe = function(renderIframe) {
                 const iframe = $('#view-page');
@@ -74,9 +77,9 @@
                 // Atualiza o conteúdo do iframe
                 try {
                     iframe.contents().find('body').html('');
-                iframe.load(function() {
-                    $(this).contents().find('body').css('background-color', '#000');
-                });
+                    iframe.load(function() {
+                        $(this).contents().find('body').css('background-color', '#000');
+                    });
                 } catch (error) {}
             }
 
@@ -108,6 +111,30 @@
                     $('#n-caracteres').css('color', 'red');
                 }
             }
+
+            // Atualiza o número de tokens
+            $.fn.updateTokens = function(nTokens) {
+                $('#n-tokens').text(`${nTokens}/${limiteTokens}`);
+                if (nTokens <= 0) {
+                    $('#n-tokens').css('color', 'red');
+                    $('#btn-enviar').attr('disabled', true);
+                } else {
+                    $('#n-tokens').css('color', 'yellow');
+                    $('#btn-enviar').attr('disabled', false);
+                }
+            }
+
+            // Busdca a quantidade de tokens do usuário
+            $.fn.getTokens = function() {
+                $.get('../requests/tokens.php', function(data) {
+                    data = JSON.parse(data);
+                    nTokens = data.tokens;
+                    limiteTokens = data.limite;
+                    $.fn.updateTokens(nTokens);
+                });
+            }
+
+            $(this).getTokens();
 
             // Contagem de caracteres
             const limite = 2000;
@@ -156,6 +183,7 @@
                     $(this).renderIframe(fileName);
                     // Para o intervalo de tempo
                     clearInterval(intervalId);
+                    $(this).getTokens(); // Atualiza o número de tokens
                 });
 
                 // Inicia o intervalo de tempo
