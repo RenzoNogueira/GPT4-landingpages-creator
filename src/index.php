@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
@@ -47,7 +47,7 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Descrição da sua Landing page</span>
-                    <span class="label-text-alt" id="n-caracteres">0/2000</span>
+                    <span class="label-text-alt" id="n-caracteres">0/6000</span>
                 </label>
                 <textarea id="description" class="textarea textarea-bordered h-24" placeholder="Descreva sua Uma Landing page simples com fundo verde e um título azul Hello World ao centro." id="input"></textarea>
                 <progress class="progress w-100 mt-1" style="display: none;" id="progress"></progress>
@@ -119,12 +119,12 @@
             $.fn.observerDescription = function(element) {
                 const caracteres = element.val().length;
                 $('#n-caracteres').text(`${caracteres}/${limite}`);
-                // Verifica se o número de caracteres é maior que 2000
+                // Verifica se o número de caracteres é maior que 6000
                 if (caracteres > limite) {
                     $('#msg-info').text('O número máximo de caracteres foi atingido');
                     // Desabilita o botão de enviar
                     $('#btn-enviar').attr('disabled', true);
-                    // Remove o texto digitado a partir do 2000º caractere
+                    // Remove o texto digitado a partir do 6000º caractere
                     $(this).val($(this).val().substring(0, limite));
                 } else {
                     $('#msg-info').text('');
@@ -178,7 +178,7 @@
             $(this).getTokens();
 
             // Contagem de caracteres
-            const limite = 2000;
+            const limite = 6000;
             const elementDescription = $('#description');
             $(elementDescription).val('Uma Landing page simples com fundo cinza e um título azul Hello World ao centro.');
             $(elementDescription).observerDescription($(this));
@@ -266,6 +266,11 @@
                     $(this).renderIframe(fileName);
                 }, 5000);
 
+            });
+
+            // Cria a div de plano de fundo
+            $(async function() {
+                await $.fn.createBackground();
             });
         });
     </script>
