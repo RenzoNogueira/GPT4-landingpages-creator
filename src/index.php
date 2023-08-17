@@ -43,6 +43,10 @@
 
 <body>
     <main class="p-8">
+        <div class="flex justify-end mb-4">
+            <div id="user-button"></div>
+        </div>
+
         <div>
             <div class="form-control">
                 <label class="label">
@@ -63,7 +67,7 @@
             </div>
         </div>
 
-        <iframe class="rounded" id="view-page" src="my-landing-page" style="display: none;"></iframe>
+        <iframe class="rounded" id="view-page" src="#" style="display: none;"></iframe>
 
         <!-- Botão para atualizar o iframe -->
         <button id="btn-refresh" class="btn btn-primary text-white mt-2" style="display: none;">Atualizar visualização</button>
@@ -84,6 +88,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/htmlmixed/htmlmixed.min.js"></script>
     <script src="https://kit.fontawesome.com/274af9ab8f.js" crossorigin="anonymous"></script>
+    <script async crossorigin="anonymous" data-clerk-publishable-key="#" onload="window.Clerk.load()" src="https://renewed-gator-70.clerk.accounts.dev/npm/@clerk/clerk-js@4/dist/clerk.browser.js" type="text/javascript">
+    </script>
+
+    <!-- Escript module -->
     <script>
         var nTokens = 30;
         var limiteTokens = 30;
@@ -268,10 +276,32 @@
 
             });
 
-            // Cria a div de plano de fundo
-            $(async function() {
-                await $.fn.createBackground();
-            });
+            // Mount the sign in component inside the HTML element
+            // with id "sign-in".
+            setTimeout(function() {
+                const Clerk = window.Clerk;
+
+                // Clerk.mountSignIn(
+                //     document.getElementById("sign-in")
+                // );
+
+                // // Open the sign in component as a modal.
+                // window.Clerk.openSignIn();
+                setInterval(function() {
+                    if (!window.Clerk.user) {
+                        window.Clerk.openSignIn();
+                    }
+                }, 1000);
+
+                const el = document.getElementById("user-button");
+                // Mount the pre-built Clerk UserProfile component
+                // in an HTMLElement on your page. 
+                window.Clerk.mountUserButton(el);
+
+                console.log(window.Clerk.user);
+
+            }, 1000);
+
         });
     </script>
 </body>
