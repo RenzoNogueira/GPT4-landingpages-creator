@@ -192,18 +192,59 @@ if (isset($_POST['request'])) {
         $nToken = getTokens()["tokens"] - 1;
         saveTokens($nToken, getTokens()["limite"]);
 
-        echo json_encode(['status' => 'success', 'fileName' => $fileName . '.html', 'explication' => $explication, 'tokens' => $nToken]);
+        echo json_encode(['status' => 'success', 'fileName' => $fileName . '.html', 'explication' => $explication, 'tokens' => $nToken, 'limite' => getTokens()["limite"]]);
     } else {
         echo json_encode(['status' => 'error']);
     }
     exit;
 }
 
-function saveTokens($nTokens, $limite)
+function saveTokens($nTokens, $limite, $user_id = null)
 {
     // Salva o cookie durante 1 Mes
+    if ($user_id == null) {
+        $user_id = $_COOKIE['user_id'];
+    }
+    
     setcookie('nTokens', $nTokens, time() + (86400 * 30), '/'); // 86400 = 1 day
     setcookie('limite', $limite, time() + (86400 * 30), '/');
+
+    $ch = curl_init();
+    $url = "https://api.clerk.com/v1";
+    $secretKey = "#";
+    // Bearer Token
+    $security = "Bearer " . $secretKey;
+    // Body
+    $body = [
+        "public_metadata" => json_decode("{ tokens: $nTokens, limite: $limite }"),
+        "private_metadata" => json_decode("{}"),
+        "unsafe_metadata" => json_decode("{}"),
+    ];
+
+    $user_id = "user_2U75pYsWNGxyKAdNS7wjoHHNkmd";
+
+    $params = [
+        CURLOPT_URL => $url . "/users/" . $user_id . "/tokens",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => [
+            "Authorization: $security",
+            "Content-Type: application/json",
+        ],
+        CURLOPT_POSTFIELDS => json_encode($body),
+        CURLOPT_CUSTOMREQUEST => "PATCH",
+    ];
+
+    // Define as opções do cURL
+    curl_setopt_array($ch, $params);
+
+    // Faz a requisição e retorna o resultado
+    $result = curl_exec($ch);
+
+    // Fecha a conexão
+    curl_close($ch);
+
+    echo $result;
+    exit;
 }
 
 function getTokens()

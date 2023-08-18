@@ -160,7 +160,7 @@
             }
 
             // Atualiza o número de tokens
-            $.fn.updateTokens = function(nTokens) {
+            $.fn.updateTokens = function(nTokens, limiteTokens) {
                 // Verificab se é menor que 0
                 if (nTokens < 0) nTokens = 0;
                 $('#n-tokens').text(`${nTokens}/${limiteTokens}`);
@@ -174,16 +174,17 @@
             }
 
             // Busca a quantidade de tokens do usuário
-            $.fn.getTokens = function() {
-                $.get('../requests/tokens.php', function(data) {
+            $.fn.getTokens = function(user_id) {
+                $.post('../requests/tokens.php', {
+                    user_id: user_id
+                }, function(data) {
                     data = JSON.parse(data);
+                    data = data.result;
                     nTokens = data.tokens;
-                    limiteTokens = data.limite;
-                    $.fn.updateTokens(nTokens);
+                    console.log(nTokens);
+                    $.fn.updateTokens(nTokens, limiteTokens);
                 });
             }
-
-            $(this).getTokens();
 
             // Contagem de caracteres
             const limite = 6000;
@@ -214,7 +215,8 @@
                 $.post('../requests/request.php', { // Inicia a requisição
                     request: {
                         description: description,
-                        fileName: fileName
+                        fileName: fileName,
+                        user_id: $.fn.user_id
                     }
                 }, function(data) {
                     data = JSON.parse(data);
@@ -250,7 +252,7 @@
                         $(this).renderIframe(fileName);
                         // Para o intervalo de tempo
                         clearInterval(intervalId);
-                        $(this).updateTokens(data.tokens); // Atualiza o número de tokens
+                        $(this).updateTokens(data.tokens, data.limite); // Atualiza o número de tokens
 
                         // Carrega a mensagem de feddback
                         $('#feedback').show();
@@ -299,6 +301,9 @@
                 window.Clerk.mountUserButton(el);
 
                 console.log(window.Clerk.user);
+
+                $.fn.user_id = window.Clerk.user.id;
+                $(this).getTokens($.fn.user_id);
 
             }, 1000);
 
