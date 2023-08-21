@@ -88,7 +88,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/htmlmixed/htmlmixed.min.js"></script>
     <script src="https://kit.fontawesome.com/274af9ab8f.js" crossorigin="anonymous"></script>
-    <script async crossorigin="anonymous" data-clerk-publishable-key="#" onload="window.Clerk.load()" src="https://renewed-gator-70.clerk.accounts.dev/npm/@clerk/clerk-js@4/dist/clerk.browser.js" type="text/javascript">
+    <script async crossorigin="anonymous" data-clerk-publishable-key="pk_test_cG9zc2libGUtbGl6YXJkLTI2LmNsZXJrLmFjY291bnRzLmRldiQ" onload="window.Clerk.load()" src="https://renewed-gator-70.clerk.accounts.dev/npm/@clerk/clerk-js@4/dist/clerk.browser.js" type="text/javascript">
     </script>
 
     <!-- Escript module -->

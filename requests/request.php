@@ -210,7 +210,7 @@ function saveTokens($nTokens, $user_id = null)
 
     $ch = curl_init();
     $url = "https://api.clerk.com/v1";
-    $secretKey = "#";
+    $secretKey = "sk_test_woUdRZ6okDZLghasPVUHZRzLMImfXfZvLxIMR1lTFp";
     // Bearer Token
     $security = "Bearer " . $secretKey;
     // Body

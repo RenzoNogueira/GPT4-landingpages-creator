@@ -23,6 +23,8 @@
 
 if (isset($_POST["user_id"])) {
 
+    $user_id = $_POST["user_id"];
+
     $ch = curl_init();
     $url = "https://api.clerk.com/v1";
     $secretKey = "#";
@@ -34,8 +36,6 @@ if (isset($_POST["user_id"])) {
         "private_metadata" => json_decode("{}"),
         "unsafe_metadata" => json_decode("{}"),
     ];
-
-    $user_id = "user_2U75pYsWNGxyKAdNS7wjoHHNkmd";
 
     $params = [
         CURLOPT_URL => $url . "/users/" . $user_id,
