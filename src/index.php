@@ -57,7 +57,7 @@
                 <progress class="progress w-100 mt-1" style="display: none;" id="progress"></progress>
                 <label class="label">
                     <span class="label-text-alt" id="msg-info"></span>
-                    <span class="label-text-alt" id="tokens-for-create"><i class="fas fa-info-circle"></i> <span id="n-tokens" class="text-yellow">30/30</span> tokens para criar sua Landing page</span>
+                    <span class="label-text-alt" id="tokens-for-create"><i class="fas fa-info-circle"></i> <span id="n-tokens" class="text-yellow">0</span> tokens para criar sua Landing page</span>
                 </label>
             </div>
             <div class="my-2">
@@ -93,8 +93,7 @@
 
     <!-- Escript module -->
     <script>
-        var nTokens = 30;
-        var limiteTokens = 30;
+        var nTokens = 0;
 
         $(document).ready(function() { // Atualiza o iframe
 
@@ -160,10 +159,10 @@
             }
 
             // Atualiza o número de tokens
-            $.fn.updateTokens = function(nTokens, limiteTokens) {
+            $.fn.updateTokens = function(nTokens) {
                 // Verificab se é menor que 0
                 if (nTokens < 0) nTokens = 0;
-                $('#n-tokens').text(`${nTokens}/${limiteTokens}`);
+                $('#n-tokens').text(`${nTokens}`);
                 if (nTokens <= 0) {
                     $('#n-tokens').css('color', 'red');
                     $('#btn-enviar').attr('disabled', true);
@@ -182,7 +181,7 @@
                     data = data.result;
                     nTokens = data.tokens;
                     console.log(nTokens);
-                    $.fn.updateTokens(nTokens, limiteTokens);
+                    $.fn.updateTokens(nTokens);
                 });
             }
 

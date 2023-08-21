@@ -70,7 +70,6 @@ if (isset($_POST["user_id"])) {
     }
 
     setcookie('nTokens', $result->public_metadata->tokens, time() + (86400 * 30), '/');
-    setcookie('limite', $result->public_metadata->limite, time() + (86400 * 30), '/');
     setcookie('user_id', $result->id, time() + (86400 * 30), '/');
 
     echo json_encode([

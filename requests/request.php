@@ -12,6 +12,7 @@ if (isset($_POST['request'])) {
     $request = $_POST['request'];
     $text = $request['description'];
     $fileName = $request['fileName'];
+    $user_id = $request['user_id'];
     $stream = $client->chat()->createStreamed([
         'model' => 'gpt-3.5-turbo',
         'messages' => [
@@ -190,16 +191,15 @@ if (isset($_POST['request'])) {
 
         // Subtrai um token do usuário
         $nToken = getTokens()["tokens"] - 1;
-        saveTokens($nToken, getTokens()["limite"]);
 
-        echo json_encode(['status' => 'success', 'fileName' => $fileName . '.html', 'explication' => $explication, 'tokens' => $nToken, 'limite' => getTokens()["limite"]]);
+        echo json_encode(['status' => 'success', 'fileName' => $fileName . '.html', 'explication' => $explication, 'tokens' => $nToken]);
     } else {
         echo json_encode(['status' => 'error']);
     }
     exit;
 }
 
-function saveTokens($nTokens, $limite, $user_id = null)
+function saveTokens($nTokens, $user_id = null)
 {
     // Salva o cookie durante 1 Mes
     if ($user_id == null) {
@@ -207,7 +207,6 @@ function saveTokens($nTokens, $limite, $user_id = null)
     }
     
     setcookie('nTokens', $nTokens, time() + (86400 * 30), '/'); // 86400 = 1 day
-    setcookie('limite', $limite, time() + (86400 * 30), '/');
 
     $ch = curl_init();
     $url = "https://api.clerk.com/v1";
@@ -216,12 +215,10 @@ function saveTokens($nTokens, $limite, $user_id = null)
     $security = "Bearer " . $secretKey;
     // Body
     $body = [
-        "public_metadata" => json_decode("{ tokens: $nTokens, limite: $limite }"),
+        "public_metadata" => json_decode("{ tokens: $nTokens }"),
         "private_metadata" => json_decode("{}"),
         "unsafe_metadata" => json_decode("{}"),
     ];
-
-    $user_id = "user_2U75pYsWNGxyKAdNS7wjoHHNkmd";
 
     $params = [
         CURLOPT_URL => $url . "/users/" . $user_id . "/tokens",
@@ -243,6 +240,9 @@ function saveTokens($nTokens, $limite, $user_id = null)
     // Fecha a conexão
     curl_close($ch);
 
+    $nTokens = getTokens()["tokens"] - 1;
+    saveTokens($nTokens, $user_id);
+
     echo $result;
     exit;
 }
@@ -251,18 +251,11 @@ function getTokens()
 {
     // Verifica se existe o número de tokens do usuário nos cookies
     if (isset($_COOKIE['nTokens'])) {
-        if (is_numeric($_COOKIE['nTokens']) && is_numeric($_COOKIE['limite'])) {
+        if (is_numeric($_COOKIE['nTokens'])) {
             $nTokens = intval($_COOKIE['nTokens']);
-            $limite = intval($_COOKIE['limite']);
-        } else {
-            $nTokens = 30;
-            $limite = 30;
-            saveTokens($nTokens, $limite);
         }
     } else {
-        $nTokens = 30;
-        $limite = 30;
-        saveTokens($nTokens, $limite);
+        $nTokens = 0;
     }
-    return array('tokens' => $nTokens, 'limite' => $limite);
+    return array('tokens' => $nTokens);
 }
