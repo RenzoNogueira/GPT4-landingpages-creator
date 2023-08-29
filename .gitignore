@@ -1,3 +1,4 @@
 key.txt
 pages/*
 vendor/*
+.config.php
