@@ -160,7 +160,7 @@
 
             // Atualiza o número de tokens
             $.fn.updateTokens = function(nTokens) {
-                // Verificab se é menor que 0
+                // Verifica se é menor que 0
                 if (nTokens < 0) nTokens = 0;
                 $('#n-tokens').text(`${nTokens}`);
                 if (nTokens <= 0) {
@@ -180,7 +180,6 @@
                     data = JSON.parse(data);
                     data = data.result;
                     nTokens = data.tokens;
-                    console.log(nTokens);
                     $.fn.updateTokens(nTokens);
                 });
             }
@@ -251,7 +250,7 @@
                         $(this).renderIframe(fileName);
                         // Para o intervalo de tempo
                         clearInterval(intervalId);
-                        $(this).updateTokens(data.tokens, data.limite); // Atualiza o número de tokens
+                        $(this).updateTokens(data.public_metadata.tokens, data.limite); // Atualiza o número de tokens
 
                         // Carrega a mensagem de feddback
                         $('#feedback').show();
@@ -298,8 +297,6 @@
                 // Mount the pre-built Clerk UserProfile component
                 // in an HTMLElement on your page. 
                 window.Clerk.mountUserButton(el);
-
-                console.log(window.Clerk.user);
 
                 $.fn.user_id = window.Clerk.user.id;
                 $(this).getTokens($.fn.user_id);
