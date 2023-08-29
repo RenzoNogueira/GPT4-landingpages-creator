@@ -1,5 +1,6 @@
 <?php
 require '../vendor/autoload.php';
+require '../.config.php';
 
 use \OpenAI as OpenAI;
 use \GuzzleHttp\Client;
@@ -192,7 +193,9 @@ if (isset($_POST['request'])) {
         // Subtrai um token do usuário
         $nToken = getTokens()["tokens"] - 1;
 
-        echo json_encode(['status' => 'success', 'fileName' => $fileName . '.html', 'explication' => $explication, 'tokens' => $nToken]);
+        $updateTokens = saveTokens($nToken, $user_id);
+
+        echo json_encode(['status' => 'success', 'fileName' => $fileName . '.html', 'explication' => $explication, 'tokens' => $nToken, 'updateTokens' => $updateTokens]);
     } else {
         echo json_encode(['status' => 'error']);
     }
@@ -205,43 +208,43 @@ function saveTokens($nTokens, $user_id = null)
     if ($user_id == null) {
         $user_id = $_COOKIE['user_id'];
     }
-    
+
     setcookie('nTokens', $nTokens, time() + (86400 * 30), '/'); // 86400 = 1 day
 
+    /**
+     * curl -XPATCH -H 'Authorization: Bearer sk_test_woUdRZ6okDZLghasPVUHZRzLMImfXfZvLxIMR1lTF' -H "Content-type: application/json" -d '{
+     *  "public_metadata": {
+     *    "tokens": 0
+     *  }
+     *}' 'https://api.clerk.com/v1/users/{user_id}/metadata'
+     */
+
     $ch = curl_init();
-    $url = "https://api.clerk.com/v1";
-    $secretKey = "sk_test_woUdRZ6okDZLghasPVUHZRzLMImfXfZvLxIMR1lTFp";
-    // Bearer Token
-    $security = "Bearer " . $secretKey;
-    // Body
-    $body = [
-        "public_metadata" => json_decode("{ tokens: $nTokens }"),
-        "private_metadata" => json_decode("{}"),
-        "unsafe_metadata" => json_decode("{}"),
-    ];
 
-    $params = [
-        CURLOPT_URL => $url . "/users/" . $user_id . "/tokens",
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_HTTPHEADER => [
-            "Authorization: $security",
-            "Content-Type: application/json",
-        ],
-        CURLOPT_POSTFIELDS => json_encode($body),
-        CURLOPT_CUSTOMREQUEST => "PATCH",
-    ];
+    curl_setopt($ch, CURLOPT_URL, 'https://api.clerk.com/v1/users/' . $user_id . '/metadata');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
 
-    // Define as opções do cURL
-    curl_setopt_array($ch, $params);
+    $headers = array(
+        'Authorization: Bearer sk_test_woUdRZ6okDZLghasPVUHZRzLMImfXfZvLxIMR1lTFp', // Substitua pelo seu token de autorização
+        'Content-Type: application/json'
+    );
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-    // Faz a requisição e retorna o resultado
+    $data = array(
+        "public_metadata" => array(
+            "tokens" => $nTokens
+        )
+    );
+    $data_json = json_encode($data);
+
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data_json);
+
     $result = curl_exec($ch);
-
-    // Fecha a conexão
+    if (curl_errno($ch)) {
+        echo 'Erro:' . curl_error($ch);
+    }
     curl_close($ch);
-
-    $nTokens = getTokens()["tokens"] - 1;
-    saveTokens($nTokens, $user_id);
 
     echo $result;
     exit;
