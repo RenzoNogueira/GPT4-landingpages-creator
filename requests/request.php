@@ -226,7 +226,7 @@ function saveTokens($nTokens, $user_id = null)
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
 
     $headers = array(
-        'Authorization: Bearer sk_test_woUdRZ6okDZLghasPVUHZRzLMImfXfZvLxIMR1lTFp', // Substitua pelo seu token de autorização
+        'Authorization: Bearer ' . CLERK_SECRET_KEY,
         'Content-Type: application/json'
     );
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
