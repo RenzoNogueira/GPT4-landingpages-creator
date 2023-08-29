@@ -38,6 +38,10 @@
         #view-page {
             background-color: #000 !important;
         }
+
+        .animate-pulse {
+            animation: pulse 1.5s infinite;
+        }
     </style>
 </head>
 
@@ -62,6 +66,7 @@
             </div>
             <div class="my-2">
                 <button id="btn-enviar" class="btn btn-primary text-white">Enviar</button>
+                <button id="btn-more-tokens" class="btn btn-primary text-white d-none">Mais Tokens</button>
                 <!-- Botao de download -->
                 <a id="btn-download" class="btn btn-success text-white ml-2" download="#" style="display: none;">Download</a>
             </div>
@@ -166,6 +171,9 @@
                 if (nTokens <= 0) {
                     $('#n-tokens').css('color', 'red');
                     $('#btn-enviar').attr('disabled', true);
+                    $('#btn-more-tokens').show();
+                    // Animar o botão de mais tokens para ficar pulsando
+                    $('#btn-more-tokens').addClass('animate-pulse');
                 } else {
                     $('#n-tokens').css('color', 'yellow');
                     $('#btn-enviar').attr('disabled', false);
@@ -281,12 +289,6 @@
             setTimeout(function() {
                 const Clerk = window.Clerk;
 
-                // Clerk.mountSignIn(
-                //     document.getElementById("sign-in")
-                // );
-
-                // // Open the sign in component as a modal.
-                // window.Clerk.openSignIn();
                 setInterval(function() {
                     if (!window.Clerk.user) {
                         window.Clerk.openSignIn();
